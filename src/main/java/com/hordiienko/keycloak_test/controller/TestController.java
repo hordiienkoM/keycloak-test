@@ -18,6 +18,11 @@ public class TestController {
         return "Hello user";
     }
 
+    @GetMapping("/user_again")
+    public String helloUserAgain() {
+        return "Hello user again";
+    }
+
     @GetMapping("/admin")
     public String helloAdmin() {
         return "Hello admin";
