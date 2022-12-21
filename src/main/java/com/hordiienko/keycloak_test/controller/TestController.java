@@ -1,9 +1,6 @@
 package com.hordiienko.keycloak_test.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
@@ -27,10 +24,5 @@ public class TestController {
     @GetMapping("/admin")
     public String helloAdmin() {
         return "Hello admin";
-    }
-
-    @PostMapping("/create_role")
-    public String createRole(String roleName) {
-        return "role created";
     }
 }

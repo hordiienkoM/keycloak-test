@@ -12,13 +12,15 @@ public class UserController {
     @Autowired
     private UserTargetService userTargetService;
 
-    @GetMapping("/user")
+    @PostMapping("/user")
     public String createUser(@RequestParam String username) {
-        try {
-            userTargetService.createUser(username);
-        } catch (ChangeSetPersister.NotFoundException e) {
-            return e.getLocalizedMessage();
-        }
+        userTargetService.createUser(username);
         return username;
+    }
+
+    @DeleteMapping("/delete")
+    public String deleteByName(@RequestParam String username) {
+        userTargetService.deleteByUsername(username);
+        return "deleted";
     }
 }

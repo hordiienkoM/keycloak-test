@@ -38,9 +38,7 @@ public class UserTarget {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "realm_id",
-            insertable = false,
-            updatable = false)
+    @JoinColumn(name = "realm_id")
     private RealmTarget realm;
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
