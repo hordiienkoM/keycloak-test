@@ -1,8 +1,7 @@
 package com.hordiienko.keycloak_test.controller;
 
-import com.hordiienko.keycloak_test.service.UserTargetService;
+import com.hordiienko.keycloak_test.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -10,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     @Autowired
-    private UserTargetService userTargetService;
+    private UserService userTargetService;
 
     @PostMapping("/user")
     public String createUser(@RequestParam String username) {
@@ -18,9 +17,9 @@ public class UserController {
         return username;
     }
 
-    @DeleteMapping("/delete")
-    public String deleteByName(@RequestParam String username) {
-        userTargetService.deleteByUsername(username);
-        return "deleted";
-    }
+//    @DeleteMapping("/user")
+//    public String deleteByName(@RequestParam String username) {
+//        userTargetService.deleteByUsername(username);
+//        return "deleted";
+//    }
 }

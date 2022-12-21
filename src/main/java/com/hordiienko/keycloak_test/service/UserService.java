@@ -1,12 +1,6 @@
 package com.hordiienko.keycloak_test.service;
 
-import com.hordiienko.keycloak_test.entity.target.UserTarget;
-import com.hordiienko.keycloak_test.repository.source.UserSourceRepository;
-import com.hordiienko.keycloak_test.repository.target.CredentialTargetRepository;
-import com.hordiienko.keycloak_test.repository.target.RealmTargetRepository;
-import com.hordiienko.keycloak_test.repository.target.RoleTargetRepository;
-import com.hordiienko.keycloak_test.repository.target.UserTargetRepository;
-import lombok.var;
+import com.hordiienko.keycloak_test.entity.User;
 import org.jboss.resteasy.client.jaxrs.internal.ResteasyClientBuilderImpl;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
@@ -15,7 +9,6 @@ import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -23,17 +16,7 @@ import javax.ws.rs.core.Response;
 import java.util.*;
 
 @Service
-public class UserTargetService {
-    @Autowired
-    private UserTargetRepository userTargetRepository;
-    @Autowired
-    private RoleTargetRepository roleRepository;
-    @Autowired
-    private CredentialTargetRepository credentialTargetRepository;
-    @Autowired
-    private RealmTargetRepository realmRepository;
-    @Autowired
-    private UserSourceRepository userSourceRepository;
+public class UserService {
 
     private Keycloak getKeycloakInstance() {
         return KeycloakBuilder.builder()
@@ -50,18 +33,16 @@ public class UserTargetService {
     }
 
     @Transactional
-    public synchronized void createUser(String username) {
+    public synchronized void createUser(User newUser) {
         Keycloak keycloak = getKeycloakInstance();
 
         UserRepresentation user = new UserRepresentation();
-        user.setUsername(username);
-        user.setFirstName("John");
-        user.setLastName("Doe");
+        user.setUsername(newUser.getUsername());
+        user.setFirstName(newUser.getFirstname());
+        user.setLastName(newUser.getLastname());
         user.setCreatedTimestamp(System.currentTimeMillis());
-        Map<String, List<String>> attributes = new HashMap<>();
-        attributes.put("phone", Collections.singletonList("0853428674"));
-        attributes.put("address", Collections.singletonList("whole the world"));
-        attributes.put("life-style", Collections.singletonList("Black-life matter!!!"));
+        Map<String, List<String>> attributes = getUserAttributes(newUser);
+
         user.setAttributes(attributes);
 
         CredentialRepresentation credential = new CredentialRepresentation();
@@ -78,6 +59,13 @@ public class UserTargetService {
         addRolePassword(username);
     }
 
+    private Map<String, List<String>> getUserAttributes(User newUser) {
+        new HashMap<>();
+        attributes.put("phone", Collections.singletonList("0853428674"));
+        attributes.put("address", Collections.singletonList("whole the world"));
+        attributes.put("life-style", Collections.singletonList("Black-life matter!!!"));
+    }
+
     public void addRolePassword(String username) {
         Keycloak keycloak = getKeycloakInstance();
 
@@ -90,10 +78,5 @@ public class UserTargetService {
         userResource.roles().realmLevel().add(rolesToAdd);
 
         keycloak.close();
-    }
-
-    public void deleteByUsername(String username) {
-        Set<UserTarget> users = userTargetRepository.findByUsername(username);
-        userTargetRepository.deleteAll(users);
     }
 }
