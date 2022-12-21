@@ -20,9 +20,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import javax.ws.rs.core.Response;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UserTargetService {
@@ -60,6 +58,18 @@ public class UserTargetService {
         user.setFirstName("John");
         user.setLastName("Doe");
         user.setCreatedTimestamp(System.currentTimeMillis());
+        Map<String, List<String>> attributes = new HashMap<>();
+        attributes.put("phone", Collections.singletonList("0853428674"));
+        attributes.put("address", Collections.singletonList("whole the world"));
+        attributes.put("life-style", Collections.singletonList("Black-life matter!!!"));
+        user.setAttributes(attributes);
+
+        CredentialRepresentation credential = new CredentialRepresentation();
+        credential.setType(CredentialRepresentation.PASSWORD);
+        credential.setValue("qwe123");
+
+        user.setCredentials(Collections.singletonList(credential));
+
         user.setEnabled(true);
         Response response = keycloak.realm("my_realm").users().create(user);
         response.close();
@@ -78,11 +88,6 @@ public class UserTargetService {
                 keycloak.realm("my_realm").roles().get("ROLE_ADMIN").toRepresentation()
         );
         userResource.roles().realmLevel().add(rolesToAdd);
-
-        CredentialRepresentation credential = new CredentialRepresentation();
-        credential.setType(CredentialRepresentation.PASSWORD);
-        credential.setValue("qwe123");
-        userResource.credentials().add(credential);
 
         keycloak.close();
     }

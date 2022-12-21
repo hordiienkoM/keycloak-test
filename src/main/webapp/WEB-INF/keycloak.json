@@ -3,6 +3,7 @@
   "resource": "my_client",
   "auth-server-url": "http://localhost:8911/auth",
   "ssl-required": "external",
-  "public-client": true,
-  "principal-attribute": "preferred_username"
+  "credentials": {
+    "secret": "iqvmdn0Doh24jUHGpn88YOquVZPuT9xr"
+  }
 }
