@@ -17,12 +17,19 @@ public class User {
     private String username;
     private String firstname;
     private String lastname;
-    @Column(name = "created_timestamp")
-    private String createdTimestamp;
     private String email;
     private String password;
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private Set<AttributeValue> attributes;
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @ManyToMany
+    @JoinTable(
+            name = "user_role",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> roles;
 }

@@ -16,10 +16,4 @@ public class UserController {
         userTargetService.createUser(username);
         return username;
     }
-
-//    @DeleteMapping("/user")
-//    public String deleteByName(@RequestParam String username) {
-//        userTargetService.deleteByUsername(username);
-//        return "deleted";
-//    }
 }
