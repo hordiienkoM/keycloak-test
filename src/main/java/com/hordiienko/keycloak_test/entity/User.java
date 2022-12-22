@@ -21,7 +21,9 @@ public class User {
     private String password;
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
     private Set<AttributeValue> attributes;
     @ToString.Exclude
     @EqualsAndHashCode.Exclude

@@ -1,12 +1,9 @@
 package com.hordiienko.keycloak_test.service;
 
-import com.hordiienko.keycloak_test.dto.AttributeValuePostDto;
 import com.hordiienko.keycloak_test.dto.UserPostDto;
-import com.hordiienko.keycloak_test.entity.Attribute;
 import com.hordiienko.keycloak_test.entity.AttributeValue;
 import com.hordiienko.keycloak_test.entity.Role;
 import com.hordiienko.keycloak_test.entity.User;
-import com.hordiienko.keycloak_test.repository.AttributeRepository;
 import com.hordiienko.keycloak_test.repository.UserRepository;
 import org.jboss.resteasy.client.jaxrs.internal.ResteasyClientBuilderImpl;
 import org.keycloak.OAuth2Constants;
@@ -21,7 +18,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.Response;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -32,12 +28,13 @@ public class UserService {
     @Value("${keycloak.realm_name}")
     private String realmName;
     @Autowired
-    private AttributeRepository attributeRepository;
-    @Autowired
     private UserRepository userRepository;
     @Autowired
     private AttributeValueService attributeValueService;
+    @Autowired
+    private RoleService roleService;
 
+    @Transactional
     public User create(UserPostDto userDto) {
         User user = new User();
         user.setUsername(userDto.getUsername());
@@ -46,10 +43,14 @@ public class UserService {
         user.setPassword(userDto.getPassword());
         user.setEmail(userDto.getEmail());
 
-        Set<AttributeValue> attributes = toAttributeValues(userDto.getAttributes(), user);
-        Set<Role> roles = toRoles
-    }
+        Set<AttributeValue> attributes = attributeValueService.
+                toAttributeValues(userDto.getAttributes(), user);
+        Set<Role> roles = roleService.toRoles(userDto.getRoleNames(), user);
 
+        user.setAttributes(attributes);
+        user.setRoles(roles);
+        return userRepository.save(user);
+    }
 
 
     private Keycloak getKeycloakInstance() {
@@ -143,5 +144,14 @@ public class UserService {
                             .toRepresentation();
                 })
                 .collect(Collectors.toList());
+    }
+
+    public void deleteByUsername(String username) {
+        userRepository.deleteAllByUsername(username);
+    }
+
+    @Transactional
+    public void moveAllToKeycloak() {
+        userRepository.findAllBy().forEach(this::setToKeycloak);
     }
 }

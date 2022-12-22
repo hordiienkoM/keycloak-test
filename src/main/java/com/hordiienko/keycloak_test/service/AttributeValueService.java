@@ -32,7 +32,7 @@ public class AttributeValueService {
         return attributeValueRepository.save(attributeValue);
     }
 
-    private Set<AttributeValue> toAttributeValues(Set<AttributeValuePostDto> attributesDto, User user) {
+    public Set<AttributeValue> toAttributeValues(Set<AttributeValuePostDto> attributesDto, User user) {
         return attributesDto.stream()
                 .map(dto -> {
                     Attribute attribute = attributeRepository
