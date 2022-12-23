@@ -15,9 +15,6 @@ import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 @KeycloakConfiguration
 public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
-
-
-
     @Bean
     public ServletListenerRegistrationBean<HttpSessionEventPublisher> httpSessionEventPublisher() {
         return new ServletListenerRegistrationBean<HttpSessionEventPublisher>(new HttpSessionEventPublisher());
@@ -56,6 +53,11 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
                 .antMatchers("/api/admin", "/users/**", "/attributes", "/roles").hasRole("ADMIN")
                 .antMatchers("/api/user", "/api/user_again").hasRole("USER")
                 .antMatchers("/api/public").permitAll()
-                .anyRequest().permitAll();
+                .anyRequest().permitAll()
+                .and()
+                .logout()
+                .addLogoutHandler(keycloakLogoutHandler())
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/api/public");
     }
 }
